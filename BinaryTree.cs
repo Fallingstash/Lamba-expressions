@@ -6,13 +6,13 @@ using System.Text;
 using System.Threading.Tasks;
 
 internal class BinaryTree<T> : IEnumerable<T> where T : IComparable<T> {
-  private TreeNode<T> Root;
+  private TreeNode<T> root;
 
   public void Add(T data) {
-    if (Root == null) {
-      Root = new TreeNode<T>(data);
+    if (root == null) {
+      root = new TreeNode<T>(data);
     } else {
-      AddChild(Root, data);
+      AddChild(root, data);
     }
   }
 
@@ -53,10 +53,10 @@ internal class BinaryTree<T> : IEnumerable<T> where T : IComparable<T> {
   }
 
   public IEnumerator<T> GetEnumerator() {
-    TreeNode<T> curent = GetMostLeftNode(Root);
-    while (curent != null) {
-      yield return curent.Data;
-      curent = Next(curent);
+    TreeNode<T> current = GetMostLeftNode(root);
+    while (current != null) {
+      yield return current.Data;
+      current = Next(current);
     } 
   }
 
@@ -64,6 +64,7 @@ internal class BinaryTree<T> : IEnumerable<T> where T : IComparable<T> {
     if (node == null) {
       return null;
     }
+
     while (node.Left != null) {
       node = node.Left;
     }
@@ -76,7 +77,7 @@ internal class BinaryTree<T> : IEnumerable<T> where T : IComparable<T> {
   }
 
   public IEnumerable<T> InOrderTraversal() {
-    return Traverse(Root);
+    return Traverse(root);
 
     IEnumerable<T> Traverse(TreeNode<T> node) {
       if (node == null) {

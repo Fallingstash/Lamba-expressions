@@ -14,12 +14,10 @@ class Program {
     tree.Add(10);
     tree.Add(11);
 
-    // Лямбда для центрального обхода
-    Func<BinaryTree<int>, IEnumerable<int>> inorder = t => t.InOrderTraversal();
+    Func<BinaryTree<int>, IEnumerable<int>> inOrder = sortedTree => sortedTree.InOrderTraversal();
 
-    // Получаем узлы в порядке возрастания
-    foreach (var num in inorder(tree)) {
-      Console.WriteLine(num);  // Выведет: 3, 5, 8
+    foreach (var num in inOrder(tree)) {
+      Console.WriteLine(num);
     }
   }
 }
