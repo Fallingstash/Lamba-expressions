@@ -7,17 +7,24 @@ using System.Threading.Tasks;
 class Program {
   static void Main(string[] args) {
     BinaryTree<int> tree = new BinaryTree<int>();
+
     tree.Add(5);
     tree.Add(3);
     tree.Add(8);
+    tree.Add(1);
+    tree.Add(4);
+    tree.Add(7);
     tree.Add(9);
-    tree.Add(10);
-    tree.Add(11);
 
-    Func<BinaryTree<int>, IEnumerable<int>> inOrder = sortedTree => sortedTree.InOrderTraversal();
+    tree.Root.Print();
 
-    foreach (var num in inOrder(tree)) {
-      Console.WriteLine(num);
+    Console.WriteLine("Pre-order: " + string.Join(", ", tree.PreOrderTraversalStack()));
+    Console.WriteLine("Post-order: " + string.Join(", ", tree.PostOrderTraversalStack()));
+
+    Console.WriteLine("Central Order for lambda expression and delegate:");
+    var central = tree.GetCentralTraversalIterator()();
+    foreach (var item in central) {
+      Console.Write(item + " ");
     }
   }
 }

@@ -6,13 +6,25 @@ using System.Text;
 using System.Threading.Tasks;
 
 internal class BinaryTree<T> : IEnumerable<T> where T : IComparable<T> {
-  private TreeNode<T> root;
+  public TreeNode<T> Root;
 
-  public void Add(T data) {
-    if (root == null) {
-      root = new TreeNode<T>(data);
+  public void Print(TreeNode<T> node) {
+    node.Print();
+  }
+
+  public TreeNode<T> Current(TreeNode<T> node) {
+    if (this == null) {
+      return null;
     } else {
-      AddChild(root, data);
+      return node;
+    }
+  }
+ 
+  public void Add(T data) {
+    if (Root == null) {
+      Root = new TreeNode<T>(data);
+    } else {
+      AddChild(Root, data);
     }
   }
 
@@ -52,8 +64,88 @@ internal class BinaryTree<T> : IEnumerable<T> where T : IComparable<T> {
     return node;
   }
 
+  public TreeNode<T> Previous(TreeNode<T> node) {
+    if (node == null) {
+      return null;
+    }
+    if (node.Left != null) {
+      node = node.Left;
+      while (node.Right != null) {
+      }
+      return node;
+    } else {
+      while (node.Parent != null && node == node.Parent.Left) {
+        node = node.Parent; 
+      }
+    }
+
+    return node.Parent; 
+  }
+
+  public IEnumerable<T> PreOrderTraversalStack() {
+    if (Root == null) {
+      yield break;
+    }
+
+    var stack = new Stack<TreeNode<T>>();
+    stack.Push(Root);
+
+    while (stack.Count > 0) {
+      var node = stack.Pop();
+      yield return node.Data;
+
+      if (node.Right != null) {
+        stack.Push(node.Right);
+      }
+      if (node.Left != null) {
+        stack.Push(node.Left);   
+      }
+    }
+  }
+
+  public IEnumerable<T> PostOrderTraversalStack() {
+    if (Root == null) {
+      yield break;
+    }
+
+    var stack = new Stack<TreeNode<T>>();
+    var result = new Stack<T>();
+    stack.Push(Root);
+
+    while (stack.Count > 0) {
+      var node = stack.Pop();
+      result.Push(node.Data);
+      if (node.Left != null) {
+        stack.Push(node.Left);
+      }
+      if (node.Right != null) {
+        stack.Push(node.Right);
+      }
+    }
+
+    while (result.Count > 0) {
+      yield return result.Pop();
+    }
+  }
+
+  public Func<IEnumerable<T>> GetCentralTraversalIterator() => () =>
+  {
+    List<T> result = new List<T>();
+    TraverseInOrder(Root, result);
+    return result;
+  };
+
+  private void TraverseInOrder(TreeNode<T> node, List<T> result) {
+    if (node == null) {
+      return;
+    }
+    TraverseInOrder(node.Left, result);
+    result.Add(node.Data);
+    TraverseInOrder(node.Right, result);
+  }
+
   public IEnumerator<T> GetEnumerator() {
-    TreeNode<T> current = GetMostLeftNode(root);
+    TreeNode<T> current = GetMostLeftNode(Root);
     while (current != null) {
       yield return current.Data;
       current = Next(current);
@@ -74,25 +166,5 @@ internal class BinaryTree<T> : IEnumerable<T> where T : IComparable<T> {
 
   IEnumerator IEnumerable.GetEnumerator() {
     return GetEnumerator();
-  }
-
-  public IEnumerable<T> InOrderTraversal() {
-    return Traverse(root);
-
-    IEnumerable<T> Traverse(TreeNode<T> node) {
-      if (node == null) {
-        yield break;
-      }
-
-      foreach (var leftNode in Traverse(node.Left)) {
-        yield return leftNode;
-      }
-
-      yield return node.Data;
-
-      foreach (var rightNode in Traverse(node.Right)) {
-        yield return rightNode;
-      }
-    }
   }
 }
